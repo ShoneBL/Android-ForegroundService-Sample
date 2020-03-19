@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -14,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,17 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        var updatedCount = 0
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    updatedCount++
+                    locationText.text = "[${updatedCount}] ${location.latitude} , ${location.longitude}"
+                }
+            }
+        }
     }
 
     private fun requestPermission() {
