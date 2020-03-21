@@ -1,5 +1,6 @@
 package jp.test.tryforegroundservicesample
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -32,12 +33,17 @@ class LocationService : Service() {
             }
         }
 
+        val intent = Intent(this, MainActivity::class.java).let {
+            PendingIntent.getActivity(this, 0, it, 0)
+        }
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("位置情報テスト")
             .setContentText("位置情報を取得しています...")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(intent)
             .build()
+
         startForeground(9999, notification)
 
         startLocationUpdates()
