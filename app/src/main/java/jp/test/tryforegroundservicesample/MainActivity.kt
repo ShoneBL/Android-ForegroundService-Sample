@@ -1,7 +1,12 @@
 package jp.test.tryforegroundservicesample
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
@@ -17,6 +22,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         requestPermission()
+
+        createNotificationChannel()
+
+        startButton.setOnClickListener {
+            val intent = Intent(this, LocationService::class.java)
+            startForegroundService(intent)
+        }
+
+        finishButton.setOnClickListener {
+            val intent = Intent(this, LocationService::class.java)
+            stopService(intent)
+        }
     }
 
     private fun requestPermission() {
@@ -50,6 +67,19 @@ class MainActivity : AppCompatActivity() {
                 ),
                 PERMISSION_REQUEST_CODE
             )
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                LocationService.CHANNEL_ID,
+                "お知らせ",
+                NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = "お知らせを通知します。"
+            }
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

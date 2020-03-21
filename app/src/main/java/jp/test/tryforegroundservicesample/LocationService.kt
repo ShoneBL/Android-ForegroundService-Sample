@@ -4,16 +4,19 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 
 class LocationService : Service() {
+    companion object {
+        const val CHANNEL_ID = "777"
+    }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
     override fun onCreate() {
         super.onCreate()
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
@@ -28,6 +31,17 @@ class LocationService : Service() {
                 }
             }
         }
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("位置情報テスト")
+            .setContentText("位置情報を取得しています...")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        startForeground(9999, notification)
+
+        startLocationUpdates()
+
         return START_STICKY
     }
 
