@@ -23,6 +23,13 @@
         </activity>
 
         <service android:name=".LocationService" />
+
+        <receiver android:name=".LocationBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="jp.test.tryforegroundservicesample.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

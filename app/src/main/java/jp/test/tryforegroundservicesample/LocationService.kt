@@ -3,6 +3,7 @@ package jp.test.tryforegroundservicesample
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.Intent.ACTION_SEND
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -36,12 +37,19 @@ class LocationService : Service() {
         val intent = Intent(this, MainActivity::class.java).let {
             PendingIntent.getActivity(this, 0, it, 0)
         }
+
+        val sendIntent = Intent(this, LocationBroadcastReceiver::class.java).apply {
+            action = ACTION_SEND
+        }
+        val sendPendingIntent = PendingIntent.getBroadcast(this, 0, sendIntent, 0)
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("位置情報テスト")
             .setContentText("位置情報を取得しています...")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(intent)
+            .addAction(R.drawable.ic_launcher_foreground, "停止する", sendPendingIntent)
             .build()
 
         startForeground(9999, notification)
