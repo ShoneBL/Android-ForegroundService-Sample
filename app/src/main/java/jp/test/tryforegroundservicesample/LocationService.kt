@@ -34,7 +34,7 @@ class LocationService : Service() {
             }
         }
 
-        val intent = Intent(this, MainActivity::class.java).let {
+        val openIntent = Intent(this, MainActivity::class.java).let {
             PendingIntent.getActivity(this, 0, it, 0)
         }
 
@@ -48,7 +48,7 @@ class LocationService : Service() {
             .setContentTitle("位置情報テスト")
             .setContentText("位置情報を取得しています...")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(intent)
+            .setContentIntent(openIntent)
             .addAction(R.drawable.ic_launcher_foreground, "停止する", sendPendingIntent)
             .build()
 
